@@ -16,13 +16,32 @@ module.exports = client => (stanza) => {
     const clientKey = stanza.attrs.to
     //get client from map and send message
     if (stanza.is('message') && (stanza.attrs.type !== 'error')) {
-        CLIENTS.get(clientKey).send(stanza)
-    }else if (stanza.is('presence')) {
-        
-    }else if (stanza.is('iq') && stanza.attrs.type == 'get') {
+        postman(stanza)
+    } else if (stanza.is('chat') && (stanza.attrs.type !== 'error')) {
+        postman(stanza)
+    } else if (stanza.is('presence')) {
 
-    }else{
+    } else if (stanza.is('iq') && stanza.attrs.type == 'get') {
+
+    }
+
+}
+
+/**
+ * If client is online, forward message
+ * @param {*} stanza 
+ */
+function postman(stanza) {
+    const clientKey = stanza.attrs.to
+    if (CLIENTS.has(clientKey)) {//client is online
         CLIENTS.get(clientKey).send(stanza)
     }
-    
+}
+
+/**
+ * save stanza to database
+ * @param {*} stanza 
+ */
+function saveToDb(stanza) {
+    console.dir(stanza)
 }

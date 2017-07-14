@@ -13,4 +13,6 @@ module.exports = client => {
     }).catch(error => {
         console.log(error)
     })
+
+    console.log("i'm connected")
 }
