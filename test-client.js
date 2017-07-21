@@ -8,7 +8,7 @@ var IQ = require('node-xmpp-core').IQ;
 
 
 var client1 = new Client({
-    websocket: { url: `ws://${process.env.XMPP_DOMAIN}:${process.env.XMPP_PORT}` },
+    websocket: { url: `ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '8090'}` },
     jid: 'client1@localhost',
     password: 'secret'
 })
@@ -16,8 +16,8 @@ client1.on('online', function (data) {
     debug('client1 is online')
     debug('client1', data)
     setInterval(()=>{
-        client1.send(new Stanza('message', { to: 'client2@localhost' }).c('body').t('HelloWorld'))
-    }, 1000)
+        client1.send(new Stanza('message', { to: '1@localhost' }).c('body').t('HelloWorld'))
+    }, 2000)
 })
 client1.on('stanza', function (stanza) {
     debug('client1', 'received stanza', stanza.root().toString())
@@ -30,7 +30,7 @@ client1.on('error', function (error) {
 
 
 var client2 = new Client({
-    websocket: { url: `ws://${process.env.XMPP_DOMAIN}:${process.env.XMPP_PORT}` },
+    websocket: { url: `ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '8090'}` },
     jid: 'client2@localhost',
     password: 'notsecret'
 })
@@ -44,6 +44,8 @@ client2.on('online', function (data) {
 })
 client2.on('stanza', function (stanza) {
     debug('client2', 'received stanza ==>',  stanza.root().toString(), "\n\n")
+    console.log(stanza.toString())
+    // client2.send(new Stanza('message', { to: '1@localhost' }).c('body').t('HelloWorld'))
 })
 
-console.log(`connected to server through websockts on ws://${process.env.XMPP_DOMAIN}:${process.env.XMPP_PORT}`)
+console.log(`connected to server through websockts on ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '8090'}`)

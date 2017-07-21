@@ -1,10 +1,11 @@
 const glob = require("glob")
 
 //config options for glob
-const options = { cwd: './event' }
+const options = { cwd: './node-xmpp-easy/event' }
 
 module.exports = {
     loadCustomEvents: () => {
+        console.log(process.cwd())
         return new Promise((resolve, reject) => {
             glob(`custom/*.js`, options, function (err, files) {
                 if (err) return reject({ error: err, message: 'error getting event' })
