@@ -1,4 +1,5 @@
 const CLIENTS = require('../../util/clients')
+const JID = require('@xmpp/jid')
 
 /**
  * When a new message is received, this function is called.
@@ -32,9 +33,10 @@ module.exports = client => (stanza) => {
 function getMessageFromStanza(stanza) {
     var from = stanza.root().attrs.from
     var to = stanza.root().attrs.to
+    var quote = stanza.root().attrs.quote
     var message = stanza.root().children[0].children[0]
 
-    return {from, to, message}
+    return {from, to, message, quote}
 }
 
 /**
@@ -43,16 +45,19 @@ function getMessageFromStanza(stanza) {
  */
 function postman(stanza) {
     const clientKey = stanza.attrs.to
-    if (CLIENTS.has(clientKey)) {//client is online
-        CLIENTS.get(clientKey).send(stanza)
+    var nJid = JID(clientKey, "localhost")
+    console.log(stanza.attrs.to, stanza.attrs.from)
+    if (CLIENTS.has(nJid.toString())) {//client is online
+        CLIENTS.get(nJid.toString()).send(stanza)
     } else {
     }
 }
 
 /**
  * save stanza to database
- * @param {*} stanza 
+ * @param {from, to message} stanza 
  */
-function saveToDb({from, to, message}) {
-    console.dir(from, to, message)
+function saveToDb({from, to, message, quote}) {
+    console.log("details below")
+    console.log("\n",from,"\n", to,"\n", message,"\n", quote)
 }

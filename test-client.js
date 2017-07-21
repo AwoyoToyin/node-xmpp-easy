@@ -16,7 +16,7 @@ client1.on('online', function (data) {
     debug('client1 is online')
     debug('client1', data)
     setInterval(()=>{
-        client1.send(new Stanza('message', { to: '1@localhost' }).c('body').t('HelloWorld'))
+        client1.send(new Stanza('message', { to: '4@localhost', quote: 'quote id mf' }).c('body').t('baba i dey come back office'))
     }, 2000)
 })
 client1.on('stanza', function (stanza) {
