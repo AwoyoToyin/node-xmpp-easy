@@ -10,6 +10,7 @@ module.exports = client => {
         events.forEach(event => {
             client.on(event.name, event.action(client))
         })
+        console.log(`${events.length} event listeners have been registered`)
     }).catch(error => {
         console.log(error)
     })
