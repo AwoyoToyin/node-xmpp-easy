@@ -4,9 +4,5 @@ const CLIENTS = require('../../util/clients')
  * @param client
  */
 module.exports = client => () => {
-    console.log('server:', client.jid.local, 'ONLINE')
-    const clientKey = `${client.jid.user}@${client.jid.domain}`
-    client['clientKey'] = clientKey
-    //store client informaiton
-    CLIENTS.set(clientKey, client)
+    console.log(`someone's online`)
 }
