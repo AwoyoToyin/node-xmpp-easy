@@ -1,6 +1,6 @@
 const glob = require("glob")
 
-//config options for glob
+//config options for glob {}
 const options = { cwd: './node-xmpp-easy/event' }
 
 module.exports = {
