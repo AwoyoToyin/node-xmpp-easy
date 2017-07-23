@@ -20,12 +20,15 @@ module.exports = client => (stanza) => {
         postman(stanza)
         saveToDb(getMessageFromStanza(stanza))
     } else if (stanza.is('chat') && (stanza.attrs.type !== 'error')) {
+        console.log('confused');
         postman(stanza)
         saveToDb(getMessageFromStanza(stanza))
     } else if (stanza.is('presence')) {
-
+        console.log('online');
+    } else if (!stanza.is('presence')) {
+        console.log('offline');
     } else if (stanza.is('iq') && stanza.attrs.type == 'get') {
-
+        console.log('whatt???');
     }
 
 }
@@ -46,7 +49,7 @@ function getMessageFromStanza(stanza) {
 function postman(stanza) {
     const clientKey = stanza.attrs.to
     var nJid = JID(clientKey, "localhost")
-    console.log(stanza.attrs.to, stanza.attrs.from)
+    // console.log(stanza.attrs.to, stanza.attrs.from)
     if (CLIENTS.has(nJid.toString())) {//client is online
         CLIENTS.get(nJid.toString()).send(stanza)
     } else {
@@ -58,6 +61,34 @@ function postman(stanza) {
  * @param {from, to message} stanza 
  */
 function saveToDb({from, to, message, quote}) {
-    console.log("details below")
-    console.log("\n",from,"\n", to,"\n", message,"\n", quote)
+    console.log("\n",from,"\n", to,"\n", message,"\n", quote);
+
+    /** formats from id */
+    let fromId;
+    let userType;
+    let fromArray = from.split('\\', 1);
+    if (fromArray[0].indexOf('client') > -1) {
+        fromId = fromArray[0].split('client');
+        userType = 'client';
+    }
+    if (fromArray[0].indexOf('assistant') > -1) {
+        fromId = fromArray[0].split('assistant');
+        userType = 'assistant';
+    }
+
+    ChatRoom.findOne({quote: quote})
+        .then((chatroom) => {
+            if (chatroom && chatroom.id) {
+                const data = {
+                    chatroom_id: chatroom.id,
+                    sender: fromId[1],
+                    userType: userType,
+                    message: message
+                }
+                chatroom.messages.add(data);
+                chatroom.save();
+            }
+        })
+        .then(() => {})
+        .catch((err) => console.log('err -- ', err))
 }
