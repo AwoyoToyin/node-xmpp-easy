@@ -18,11 +18,9 @@ module.exports = client => (stanza) => {
     //get client from map and send message
     if (stanza.is('message') && (stanza.attrs.type !== 'error')) {
         postman(stanza)
-        saveToDb(getMessageFromStanza(stanza))
     } else if (stanza.is('chat') && (stanza.attrs.type !== 'error')) {
         console.log('confused');
         postman(stanza)
-        saveToDb(getMessageFromStanza(stanza))
     } else if (stanza.is('presence')) {
         console.log('online');
     } else if (!stanza.is('presence')) {
@@ -34,10 +32,10 @@ module.exports = client => (stanza) => {
 }
 
 function getMessageFromStanza(stanza) {
-    var from = stanza.root().attrs.from
-    var to = stanza.root().attrs.to
-    var quote = stanza.root().attrs.quote
-    var message = stanza.root().children[0].children[0]
+    let from = stanza.root().attrs.from
+    let to = stanza.root().attrs.to
+    let quote = stanza.root().attrs.quote
+    let message = stanza.root().children[0].children[0]
 
     return {from, to, message, quote}
 }
@@ -48,25 +46,30 @@ function getMessageFromStanza(stanza) {
  */
 function postman(stanza) {
     const clientKey = stanza.attrs.to
-    var nJid = JID(clientKey, "localhost")
-    // console.log(stanza.attrs.to, stanza.attrs.from)
+    let nJid = JID(clientKey, "localhost")
+    let sendMail = false
+
     if (CLIENTS.has(nJid.toString())) {//client is online
+        console.log('client is online -- ', nJid.toString())
         CLIENTS.get(nJid.toString()).send(stanza)
     } else {
+        sendMail = true
+        console.log('client is offline -- ', nJid.toString())
     }
+    saveToDb(getMessageFromStanza(stanza), sendMail)
 }
 
 /**
  * save stanza to database
  * @param {from, to message} stanza 
  */
-function saveToDb({from, to, message, quote}) {
+function saveToDb({from, to, message, quote}, sendMail = false) {
     console.log("\n",from,"\n", to,"\n", message,"\n", quote);
 
     /** formats from id */
     let fromId;
     let userType;
-    let fromArray = from.split('\\', 1);
+    const fromArray = from.split('\\', 1);
     if (fromArray[0].indexOf('client') > -1) {
         fromId = fromArray[0].split('client');
         userType = 'client';
@@ -77,6 +80,9 @@ function saveToDb({from, to, message, quote}) {
     }
 
     ChatRoom.findOne({quote: quote})
+        .populate('quote')
+        .populate('assistant')
+        .populate('client')
         .then((chatroom) => {
             if (chatroom && chatroom.id) {
                 const data = {
@@ -85,8 +91,41 @@ function saveToDb({from, to, message, quote}) {
                     userType: userType,
                     message: message
                 }
-                chatroom.messages.add(data);
-                chatroom.save();
+                // save message to chatroom
+                chatroom.messages.add(data)
+                chatroom.save()
+
+                // send email to recipient if not online
+                if (sendMail) {
+                    let recipient
+                    let sentBy
+                    let to
+                    let quotelink
+    
+                    if (userType == 'client') {
+                        recipient = `${chatroom.assistant.firstname} ${chatroom.assistant.lastname}`
+                        sentBy = `${chatroom.client.firstname} ${chatroom.client.lastname}`
+                        to = chatroom.assistant.email
+                        quotelink = `assistant/account/request-order/edit/${chatroom.quote.id}`
+                    } else {
+                        recipient = `${chatroom.client.firstname} ${chatroom.client.lastname}`
+                        sentBy = `${chatroom.assistant.firstname} ${chatroom.assistant.lastname}`
+                        to = chatroom.client.email
+                        quotelink = `client/account/request-order/edit/${chatroom.quote.id}`
+                    }
+
+                    if (recipient && sentBy && to && quotelink) {
+                        MailerService.sendMessageReceivedMail({
+                            to: to,
+                            extra: {
+                                recipient: recipient,
+                                sentBy: sentBy,
+                                code: chatroom.quote.code,
+                                quotelink: quotelink
+                            }
+                        })
+                    }
+                }
             }
         })
         .then(() => {})
