@@ -5,7 +5,7 @@ const options = { cwd: './node-xmpp-easy/event' }
 
 module.exports = {
     loadCustomEvents: () => {
-        console.log(process.cwd())
+        // console.log(process.cwd())
         return new Promise((resolve, reject) => {
             glob(`custom/*.js`, options, function (err, files) {
                 if (err) return reject({ error: err, message: 'error getting event' })

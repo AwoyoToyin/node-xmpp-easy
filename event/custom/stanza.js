@@ -19,14 +19,14 @@ module.exports = client => (stanza) => {
     if (stanza.is('message') && (stanza.attrs.type !== 'error')) {
         postman(stanza)
     } else if (stanza.is('chat') && (stanza.attrs.type !== 'error')) {
-        console.log('confused');
+        // console.log('confused');
         postman(stanza)
     } else if (stanza.is('presence')) {
-        console.log('online');
+        // console.log('online');
     } else if (!stanza.is('presence')) {
-        console.log('offline');
+        // console.log('offline');
     } else if (stanza.is('iq') && stanza.attrs.type == 'get') {
-        console.log('whatt???');
+        // console.log('whatt???');
     }
 
 }
@@ -49,12 +49,13 @@ function postman(stanza) {
     let nJid = JID(clientKey, "localhost")
     let sendMail = false
 
+    // console.log('nJid.toString() -- ',CLIENTS.get(nJid.toString()));
     if (CLIENTS.has(nJid.toString())) {//client is online
-        console.log('client is online -- ', nJid.toString())
+        // console.log('client is online -- ', nJid.toString())
         CLIENTS.get(nJid.toString()).send(stanza)
     } else {
         sendMail = true
-        console.log('client is offline -- ', nJid.toString())
+        // console.log('client is offline -- ', nJid.toString())
     }
     saveToDb(getMessageFromStanza(stanza), sendMail)
 }
@@ -92,6 +93,7 @@ function saveToDb({from, to, message, quote}, sendMail = false) {
                     message: message
                 }
                 // save message to chatroom
+                // console.log('data -- ', data)
                 chatroom.messages.add(data)
                 chatroom.save()
 
@@ -101,17 +103,16 @@ function saveToDb({from, to, message, quote}, sendMail = false) {
                     let sentBy
                     let to
                     let quotelink
-    
                     if (userType == 'client') {
                         recipient = `${chatroom.assistant.firstname} ${chatroom.assistant.lastname}`
                         sentBy = `${chatroom.client.firstname} ${chatroom.client.lastname}`
                         to = chatroom.assistant.email
-                        quotelink = `assistant/account/request-order/edit/${chatroom.quote.id}`
+                        quotelink = `assistant/account/request-order`
                     } else {
                         recipient = `${chatroom.client.firstname} ${chatroom.client.lastname}`
                         sentBy = `${chatroom.assistant.firstname} ${chatroom.assistant.lastname}`
                         to = chatroom.client.email
-                        quotelink = `client/account/request-order/edit/${chatroom.quote.id}`
+                        quotelink = `client/account/request-order`
                     }
 
                     if (recipient && sentBy && to && quotelink) {
@@ -121,7 +122,8 @@ function saveToDb({from, to, message, quote}, sendMail = false) {
                                 recipient: recipient,
                                 sentBy: sentBy,
                                 code: chatroom.quote.code,
-                                quotelink: quotelink
+                                quotelink: quotelink,
+                                message: message
                             }
                         })
                     }

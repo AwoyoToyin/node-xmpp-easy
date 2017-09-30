@@ -14,5 +14,5 @@ module.exports = client => {
         console.log(error)
     })
 
-    console.log("i'm connected")
+    // console.log("i'm connected")
 }

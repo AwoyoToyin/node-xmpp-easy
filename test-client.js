@@ -8,7 +8,7 @@ var IQ = require('node-xmpp-core').IQ;
 
 
 var client1 = new Client({
-    websocket: { url: `ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '8090'}` },
+    websocket: { url: `ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '1338'}` },
     jid: 'client1@localhost',
     password: 'secret'
 })
@@ -30,7 +30,7 @@ client1.on('error', function (error) {
 
 
 var client2 = new Client({
-    websocket: { url: `ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '8090'}` },
+    websocket: { url: `ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '1338'}` },
     jid: 'client2@localhost',
     password: 'notsecret'
 })
@@ -48,4 +48,4 @@ client2.on('stanza', function (stanza) {
     // client2.send(new Stanza('message', { to: '1@localhost' }).c('body').t('HelloWorld'))
 })
 
-console.log(`connected to server through websockts on ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '8090'}`)
+console.log(`connected to server through websockts on ws://${process.env.XMPP_DOMAIN || 'localhost'}:${process.env.XMPP_PORT || '1338'}`)
