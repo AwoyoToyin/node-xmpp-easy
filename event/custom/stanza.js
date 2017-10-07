@@ -46,7 +46,7 @@ function getMessageFromStanza(stanza) {
  */
 function postman(stanza) {
     const clientKey = stanza.attrs.to
-    let nJid = JID(clientKey, "localhost")
+    let nJid = JID(clientKey, "35.157.196.208")
     let sendMail = false
 
     // console.log('nJid.toString() -- ',CLIENTS.get(nJid.toString()));
