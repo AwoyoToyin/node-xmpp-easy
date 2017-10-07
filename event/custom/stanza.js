@@ -51,7 +51,7 @@ function postman(stanza) {
 
     // console.log('nJid.toString() -- ',CLIENTS.get(nJid.toString()));
     if (CLIENTS.has(nJid.toString())) {//client is online
-        // console.log('client is online -- ', nJid.toString())
+        console.log('client is online -- ', nJid.toString())
         CLIENTS.get(nJid.toString()).send(stanza)
     } else {
         sendMail = true
