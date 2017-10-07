@@ -22,7 +22,7 @@ module.exports = client => (stanza) => {
         // console.log('confused');
         postman(stanza)
     } else if (stanza.is('presence')) {
-        // console.log('online');
+        console.log('online');
     } else if (!stanza.is('presence')) {
         // console.log('offline');
     } else if (stanza.is('iq') && stanza.attrs.type == 'get') {

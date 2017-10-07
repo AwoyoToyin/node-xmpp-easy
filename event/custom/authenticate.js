@@ -22,7 +22,7 @@ module.exports = client => (opts, cb) => {
 }
 
 function saveClient(client) {
-    // console.log('server:', client.jid.local, 'ONLINE')
+    console.log('server:', client.jid.local, 'ONLINE')
     const clientKey = `${client.jid.user}@${client.jid.domain}`
     client['clientKey'] = clientKey
     //store client informaiton
