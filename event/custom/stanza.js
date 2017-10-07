@@ -22,7 +22,7 @@ module.exports = client => (stanza) => {
         // console.log('confused');
         postman(stanza)
     } else if (stanza.is('presence')) {
-        console.log('online');
+        // console.log('online');
     } else if (!stanza.is('presence')) {
         // console.log('offline');
     } else if (stanza.is('iq') && stanza.attrs.type == 'get') {
@@ -46,16 +46,15 @@ function getMessageFromStanza(stanza) {
  */
 function postman(stanza) {
     const clientKey = stanza.attrs.to
-    let nJid = JID(clientKey, "35.157.196.208")
+    let nJid = JID(clientKey, process.env.JID_IP)
     let sendMail = false
 
-    // console.log('nJid.toString() -- ',CLIENTS.get(nJid.toString()));
     if (CLIENTS.has(nJid.toString())) {//client is online
-        console.log('client is online -- ', nJid.toString())
+        // console.log('client is online -- ', nJid.toString())
         CLIENTS.get(nJid.toString()).send(stanza)
     } else {
         sendMail = true
-        console.log('client is offline -- ', nJid.toString())
+        // console.log('client is offline -- ', nJid.toString())
     }
     saveToDb(getMessageFromStanza(stanza), sendMail)
 }
