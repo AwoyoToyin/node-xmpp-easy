@@ -55,7 +55,7 @@ function postman(stanza) {
         CLIENTS.get(nJid.toString()).send(stanza)
     } else {
         sendMail = true
-        // console.log('client is offline -- ', nJid.toString())
+        console.log('client is offline -- ', nJid.toString())
     }
     saveToDb(getMessageFromStanza(stanza), sendMail)
 }
