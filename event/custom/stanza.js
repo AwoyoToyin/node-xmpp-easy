@@ -64,7 +64,7 @@ function postman(stanza) {
  * @param {from, to message} stanza 
  */
 function saveToDb({from, to, message, quote}, sendMail = false) {
-    console.log("\n",from,"\n", to,"\n", message,"\n", quote);
+    // console.log("\n",from,"\n", to,"\n", message,"\n", quote);
 
     /** formats from id */
     let fromId;
