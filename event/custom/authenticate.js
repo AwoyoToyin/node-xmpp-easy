@@ -27,4 +27,6 @@ function saveClient(client) {
     client['clientKey'] = clientKey
     //store client informaiton
     CLIENTS.set(clientKey, client)
+    console.log(CLIENTS.size)
+    console.dir(CLIENTS.keys())
 }
