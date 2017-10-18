@@ -46,7 +46,7 @@ function getMessageFromStanza(stanza) {
  */
 function postman(stanza) {
     const clientKey = stanza.attrs.to
-    let nJid = JID(clientKey, process.env.JID_IP)
+    let nJid = JID(clientKey, process.env.XMPP_DOMAIN_PROD)
     let sendMail = false
 
     if (CLIENTS.has(nJid.toString())) {//client is online
@@ -92,7 +92,7 @@ function saveToDb({from, to, message, quote}, sendMail = false) {
                     message: message
                 }
                 // save message to chatroom
-                // console.log('data -- ', data)
+                console.log('data -- ', data)
                 chatroom.messages.add(data)
                 chatroom.save()
 
