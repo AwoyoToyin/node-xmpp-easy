@@ -92,7 +92,7 @@ function saveToDb({from, to, message, quote}, sendMail = false) {
                     message: message
                 }
                 // save message to chatroom
-                console.log('data -- ', data)
+                // console.log('data -- ', data)
                 chatroom.messages.add(data)
                 chatroom.save()
 
