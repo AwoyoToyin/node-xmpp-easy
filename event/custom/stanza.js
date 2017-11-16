@@ -46,7 +46,7 @@ function getMessageFromStanza(stanza) {
  */
 function postman(stanza) {
     const clientKey = stanza.attrs.to
-    let nJid = JID(clientKey, process.env.XMPP_DOMAIN_PROD)
+    let nJid = JID(clientKey, process.env.XMPP_DOMAIN)
     let sendMail = false
 
     if (CLIENTS.has(nJid.toString())) {//client is online
