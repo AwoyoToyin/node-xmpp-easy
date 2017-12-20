@@ -46,7 +46,9 @@ function getMessageFromStanza(stanza) {
  */
 function postman(stanza) {
     const clientKey = stanza.attrs.to
-    let nJid = JID(clientKey, process.env.XMPP_DOMAIN)
+    const domain = (sails.config.environment === "production") ? process.env.XMPP_DOMAIN_PROD : process.env.XMPP_DOMAIN_DEV;
+
+    let nJid = JID(clientKey, domain)
     let sendMail = false
 
     if (CLIENTS.has(nJid.toString())) {//client is online
@@ -79,10 +81,7 @@ function saveToDb({from, to, message, quote}, sendMail = false) {
         userType = 'assistant';
     }
 
-    ChatRoom.findOne({quote: quote})
-        .populate('quote')
-        .populate('assistant')
-        .populate('client')
+    ChatRoom.findOne({quote: quote}).populateAll()
         .then((chatroom) => {
             if (chatroom && chatroom.id) {
                 const data = {
