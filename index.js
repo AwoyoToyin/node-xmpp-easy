@@ -11,7 +11,7 @@ const domain = (sails.config.environment === "production") ? process.env.XMPP_DO
 const port = process.env.XMPP_PORT;
 
 const server = new WebSocketServer({
-    port: process.env.XMPP_PORT,
+    port: port,
     domain: domain
 });
 
