@@ -8,10 +8,10 @@ const {WebSocketServer} = require('node-xmpp-server');
 const {Stanza} = require('node-xmpp-core');
 
 const domain = (sails.config.environment === "production") ? process.env.XMPP_DOMAIN_PROD : process.env.XMPP_DOMAIN_DEV;
-// const port = (sails.config.environment === "production") ? process.env.XMPP_PORT_PROD : process.env.XMPP_PORT_DEV;
+const port = process.env.XMPP_PORT;
 
 const server = new WebSocketServer({
-    port: process.env.XMPP_PORT,
+    port,
     domain: domain
 });
 
